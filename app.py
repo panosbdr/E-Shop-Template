@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request , session, redirect, url_for
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///store.db'
 app.secret_key = "mysecretkey"
 db = SQLAlchemy(app)
 #Create Model
@@ -12,6 +12,18 @@ class Users(db.Model):
     email = db.Column(db.String(50),primary_key = True)
     password = db.Column(db.String(50),nullable = False)
     date_addit = db.Column(db.DateTime, default = datetime.utcnow)
+    verified = db.Column(db.Boolean, default = False)
+    role = db.Column(db.String(10), default = "Guest") #Admin , User , Guest
+    image = db.Column(db.String(55), default = "imgdefault.png")
+
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(30), nullable = False)
+    description = db.Column(db.String(40), nullable = False)
+    price = db.Column(db.Float, nullable = False)
+    image = db.Column(db.String(55))
+    date_addit = db.Column(db.DateTime, default = datetime.utcnow)
+
 
 @app.route("/")
 def home():
@@ -29,7 +41,6 @@ def signup():
         email = request.form["email"]
         password = request.form["password"]
         verifypassword = request.form["verify"]
-        print(email,password)
         if password == verifypassword:
             new_user = Users(email = email, password = password)
             db.session.add(new_user)
@@ -53,7 +64,8 @@ def login():
 
 @app.route("/products")
 def products():
-    return render_template("products.html")
+    all_products = Product.query.all()
+    return render_template("products.html", products = all_products)
 
 @app.route("/profile")
 def profile():
@@ -62,12 +74,28 @@ def profile():
     current_user = Users.query.filter_by(email = session["email"]).first()
     return render_template("profile.html",current_user = current_user)
 
-    
-
 @app.route("/logout")
 def logout():
     session.pop("email",None)
     return redirect(url_for("home"))
+
+@app.route("/admin", methods = ["POST","GET"])
+def admin():
+    if not session.get("email"):
+        return redirect(url_for("login"))
+    current_user = Users.query.filter_by(email = session["email"]).first()
+    if current_user and current_user.role == "Admin":
+        if request.method == "POST":
+            name = request.form["name"]
+            price = request.form["price"]
+            description = request.form["description"]
+            new_product = Product(name = name, price = float(price), description = description)
+            db.session.add(new_product)
+            db.session.commit()
+    else:
+        print("No Access")
+    return render_template("admin.html")
+
 
 
 if __name__ == "__main__":

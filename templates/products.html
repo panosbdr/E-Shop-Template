@@ -29,74 +29,26 @@
 <section class="products-page">
 
     <h1>Our Products</h1>
-
+    {%for i in products %}
     <div class="products-grid">
 
         <div class="product-card">
 
-            <img src="https://via.placeholder.com/300x220" alt="Product">
+            <img src="{{i.image}}" alt="Product">
 
-            <h2>Gaming Mouse</h2>
+            <h2>{{i.name}}</h2>
 
-            <p class="price">$39.99</p>
+            <p class="price">{{i.price}}</p>
 
             <p class="description">
-                High precision RGB gaming mouse.
+                {{i.description}}
             </p>
 
             <button>View Product</button>
 
         </div>
-
-        <div class="product-card">
-
-            <img src="https://via.placeholder.com/300x220" alt="Product">
-
-            <h2>Mechanical Keyboard</h2>
-
-            <p class="price">$79.99</p>
-
-            <p class="description">
-                RGB mechanical keyboard.
-            </p>
-
-            <button>View Product</button>
-
-        </div>
-
-        <div class="product-card">
-
-            <img src="https://via.placeholder.com/300x220" alt="Product">
-
-            <h2>Gaming Headset</h2>
-
-            <p class="price">$59.99</p>
-
-            <p class="description">
-                Crystal clear surround sound.
-            </p>
-
-            <button>View Product</button>
-
-        </div>
-
-        <div class="product-card">
-
-            <img src="https://via.placeholder.com/300x220" alt="Product">
-
-            <h2>Gaming Monitor</h2>
-
-            <p class="price">$249.99</p>
-
-            <p class="description">
-                165Hz Full HD IPS Display.
-            </p>
-
-            <button>View Product</button>
-
-        </div>
-
     </div>
+    {%endfor%}
 
 </section>
 
