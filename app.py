@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request , session, redirect, url_for
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.secret_key = "mysecretkey"
 db = SQLAlchemy(app)
 #Create Model
 class Users(db.Model):
@@ -14,10 +15,9 @@ class Users(db.Model):
 
 @app.route("/")
 def home():
-    if login == True:
+    if session.get("email"):
         text = "Products"
         link = "/products"
-        
     else:
         text = "Create Account"
         link = "/signup"
@@ -43,10 +43,10 @@ def login():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
-        current_user = Users.query.filter_by(email=email).first()
+        current_user = Users.query.filter_by(email=email).first()   
         if current_user and current_user.password == password:
-            login = True
-            return render_template("products.html",login = login)
+            session["email"] = current_user.email
+            return redirect(url_for("products"))
         else:
             print("Wrong information")
     return render_template("login.html")
@@ -57,11 +57,17 @@ def products():
 
 @app.route("/profile")
 def profile():
-    return render_template("profile.html")
+    if not session.get("email"):
+        return redirect(url_for("login"))
+    current_user = Users.query.filter_by(email = session["email"]).first()
+    return render_template("profile.html",current_user = current_user)
+
+    
 
 @app.route("/logout")
 def logout():
-    return render_template("login.html",login = False)
+    session.pop("email",None)
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":
