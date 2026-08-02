@@ -16,11 +16,12 @@
 
 <h2>Product</h2>
 
-<form action="/admin" method="POST">
+<form action="/admin" method="POST" enctype="multipart/form-data">
 
 <input type="text" placeholder="Product Name" name="name"required>
 <input type="text" placeholder="Product Description" name="description"required>
 <input type="number" placeholder="Product Price" name="price" required>
+<input type="file" name="image" accept=".png,.jpg,.jpeg" required>
 
 <button type="submit">
 Create Product

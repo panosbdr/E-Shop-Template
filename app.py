@@ -3,6 +3,9 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request , session, redirect, url_for
 
+import os
+from werkzeug.utils import secure_filename
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///store.db'
 app.secret_key = "mysecretkey"

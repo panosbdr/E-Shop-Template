@@ -34,7 +34,7 @@
 
         <div class="product-card">
 
-            <img src="{{i.image}}" alt="Product">
+            <img src="{{ url_for('static', filename='products_img/' + i.image) }}">
 
             <h2>{{i.name}}</h2>
 
