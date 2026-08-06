@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, request , session, redirect, url_for
+from flask import Flask, render_template, request , session, redirect, url_for, flash
 import os
 from werkzeug.utils import secure_filename
 
@@ -46,7 +46,7 @@ def home():
     else:
         text = "Create Account"
         link = "/signup"
-    return render_template("index.html",text = text,link = link)
+    return render_template("index.html",text = text,link = link,condition = "home",logged = session.get("email"))
 
 @app.route("/signup",methods = ["POST","GET"])
 def signup():
@@ -59,8 +59,8 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
         else:
-            print("Passwords dont match")
-    return render_template("signup.html")
+            flash("Passwords Dont Match", "danger")  # ===> Flash message
+    return render_template("signup.html",condition = "signup",logged = session.get("email"))
 
 @app.route("/login",methods = ["POST","GET"])
 def login():
@@ -72,20 +72,20 @@ def login():
             session["email"] = current_user.email
             return redirect(url_for("products"))
         else:
-            print("Wrong information")
-    return render_template("login.html")
+            flash("Wrong email or password.", "danger")  # ===> Flash message
+    return render_template("login.html",condition = "login", logged = session.get("email"))
 
 @app.route("/products")
 def products():
     all_products = Product.query.all()
-    return render_template("products.html", products = all_products)
+    return render_template("products.html", products = all_products,condition = "products",logged = session.get("email"))
 
 @app.route("/profile")
 def profile():
     if not session.get("email"):
         return redirect(url_for("login"))
     current_user = Users.query.filter_by(email = session["email"]).first()
-    return render_template("profile.html",current_user = current_user)
+    return render_template("profile.html",current_user = current_user,condition = "profile",logged = session.get("email"))
 
 @app.route("/logout")
 def logout():
@@ -124,4 +124,4 @@ with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
