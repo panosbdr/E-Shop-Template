@@ -38,6 +38,7 @@ def allowed_file(filename):
 
 
 @app.route("/")
+@app.route("/home")
 def home():
     if session.get("email"):
         text = "Products"
@@ -119,9 +120,8 @@ def admin():
         print("No Access")
     return render_template("admin.html")
 
-
+with app.app_context():
+    db.create_all()
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+    app.run()
