@@ -2,7 +2,6 @@ from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request , session, redirect, url_for
-
 import os
 from werkzeug.utils import secure_filename
 
@@ -26,6 +25,16 @@ class Product(db.Model):
     price = db.Column(db.Float, nullable = False)
     image = db.Column(db.String(55))
     date_addit = db.Column(db.DateTime, default = datetime.utcnow)
+
+
+UPLOAD_FOLDER = os.path.join("static", "products_img")
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
+
+def allowed_file(filename):
+    if "." not in filename:
+        return False
+    extension = filename.rsplit(".", 1)[1].lower()
+    return extension in ALLOWED_EXTENSIONS
 
 
 @app.route("/")
@@ -92,8 +101,19 @@ def admin():
             name = request.form["name"]
             price = request.form["price"]
             description = request.form["description"]
+            image_file = request.files.get("image")
+            if not image_file or image_file.filename == "":
+                   return "Πρέπει να επιλέξεις μια εικόνα.", 400
+            if not allowed_file(image_file.filename):
+                return "Επιτρέπονται μόνο αρχεία .png, .jpg, .jpeg", 400
+            extension = image_file.filename.rsplit(".", 1)[1].lower()
             new_product = Product(name = name, price = float(price), description = description)
             db.session.add(new_product)
+            db.session.commit()
+            image_filename = secure_filename(f"{new_product.id}.{extension}")
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            image_file.save(os.path.join(UPLOAD_FOLDER, image_filename))
+            new_product.image = image_filename
             db.session.commit()
     else:
         print("No Access")
