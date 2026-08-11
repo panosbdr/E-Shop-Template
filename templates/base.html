@@ -16,7 +16,7 @@
     </div>
 
     <nav>
-        {%if condition in ["login","signup","products","profile"]%}
+        {%if condition in ["login","signup","products","profile","admin"]%}
         <a href="/">Home</a>
         {%endif%}
         {%if condition in ["signup"]%}
@@ -25,14 +25,17 @@
         {%if condition in ["login"]%}
         <a href="/signup">Sign Up</a>
         {%endif%}
-        {%if condition in ["home","profile"]%}
+        {%if condition in ["home","profile","admin"]%}
         <a href="/products">Products</a>
         {%endif%}
-        {%if condition in ["home","products"]%}
+        {%if condition in ["home","products","admin"]%}
         <a href="/profile">Profile</a>
         {%endif%}
         {%if logged%}
         <a href="/logout">Logout</a>
+        {%endif%}
+        {%if role == "Admin" and logged%}
+        <a href="/admin">Admin Panel</a>
         {%endif%}
 
     </nav>

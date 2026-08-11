@@ -46,7 +46,7 @@ def home():
     else:
         text = "Create Account"
         link = "/signup"
-    return render_template("index.html",text = text,link = link,condition = "home",logged = session.get("email"))
+    return render_template("index.html",text = text,link = link,condition = "home",logged = session.get("email"), role = session.get("role"))
 
 @app.route("/signup",methods = ["POST","GET"])
 def signup():
@@ -60,7 +60,7 @@ def signup():
             db.session.commit()
         else:
             flash("Passwords Dont Match", "danger")  # ===> Flash message
-    return render_template("signup.html",condition = "signup",logged = session.get("email"))
+    return render_template("signup.html",condition = "signup",logged = session.get("email") , role = session.get("role"))
 
 @app.route("/login",methods = ["POST","GET"])
 def login():
@@ -70,22 +70,23 @@ def login():
         current_user = Users.query.filter_by(email=email).first()   
         if current_user and current_user.password == password:
             session["email"] = current_user.email
+            session["role"] = current_user.role
             return redirect(url_for("products"))
         else:
             flash("Wrong email or password.", "danger")  # ===> Flash message
-    return render_template("login.html",condition = "login", logged = session.get("email"))
+    return render_template("login.html",condition = "login", logged = session.get("email") , role = session.get("role"))
 
 @app.route("/products")
 def products():
     all_products = Product.query.all()
-    return render_template("products.html", products = all_products,condition = "products",logged = session.get("email"))
+    return render_template("products.html", products = all_products,condition = "products",logged = session.get("email") , role = session.get("role"))
 
 @app.route("/profile")
 def profile():
     if not session.get("email"):
         return redirect(url_for("login"))
     current_user = Users.query.filter_by(email = session["email"]).first()
-    return render_template("profile.html",current_user = current_user,condition = "profile",logged = session.get("email"))
+    return render_template("profile.html",current_user = current_user,condition = "profile",logged = session.get("email") , role = session.get("role"))
 
 @app.route("/logout")
 def logout():
@@ -118,7 +119,7 @@ def admin():
             db.session.commit()
     else:
         print("No Access")
-    return render_template("admin.html")
+    return render_template("admin.html",logged = session.get("email"),condition = "admin")
 
 with app.app_context():
     db.create_all()
