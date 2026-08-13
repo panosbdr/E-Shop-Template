@@ -37,7 +37,16 @@
         {%if role == "Admin" and logged%}
         <a href="/admin">Admin Panel</a>
         {%endif%}
-
+        {% if current_user %}  {# ===> if logged in, show avatar right after Logout #}
+        <a href="{{ url_for('profile') }}" class="user-header-box">  {# ===> clicking the avatar takes you to the profile page #}
+            {% if current_user.image and current_user.image != "imgdefault.png" %}
+                <img src="{{ url_for('static', filename='profile_img/' + current_user.image) }}" alt="Profile Picture" class="header-avatar">  {# ===> small circular user image #}
+            {% else %}
+                <div class="header-avatar text-avatar">{{ current_user.email[0]|upper }}</div>  {# ===> default initial letter avatar #}
+            {% endif %}
+        </a>
+        {% endif %}
+        
     </nav>
 
 </header>

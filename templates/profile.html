@@ -1,17 +1,36 @@
 {% extends "base.html" %}
 {% block title %}Profile{% endblock %}
-{%block content%}
+{% block content %}
 
-<section class="profile">
+<section class="profile container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    {% set profile_image = None %}
+                    {% if current_user.image and current_user.image != "imgdefault.png" %}
+                        {% set profile_image = url_for('static', filename='profile_img/' + current_user.image) %}
+                    {% endif %}
 
-<h1>Welcome</h1>
+                    <form method="POST" enctype="multipart/form-data" class="mt-4 text-start">
+                        <label for="image" class="profile-image-upload">
+                            {% if profile_image %}
+                                <img src="{{ profile_image }}" alt="Profile Picture" class="profile-image-preview">
+                            {% else %}
+                                <div class="profile-image-preview profile-image-default">
+                                    {{ current_user.email[0]|upper }}
+                                </div>
+                            {% endif %}
+                        </label>
+                        <input type="file" class="d-none" id="image" name="image" accept="image/png, image/jpeg, image/jpg">
+                        <button type="submit" class="btn btn-primary mt-3">Save Profile</button> 
+                    </form>
 
-<p>
-
-<h4>Email = {{current_user.email}}</h4>
-<h4>Password = {{current_user.password}}</h4>
-
-</p>
-
+                    <h1 class="mb-3">Welcome</h1>
+                    <h4>Email: {{ current_user.email }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 {% endblock %}

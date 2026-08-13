@@ -23,6 +23,38 @@ header{
     background:#0f172a;
 }
 
+nav{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.user-header-box{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-left:5px;
+}
+
+.header-avatar{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #38bdf8;
+    display:block;
+}
+
+.text-avatar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#2563eb;
+    color:white;
+    font-weight:bold;
+    font-size:14px;
+}
+
 .logo{
 
     font-size:30px;
@@ -254,9 +286,44 @@ form a{
 
 .profile h1{
 
-    font-size:45px;
-
+    font-size:35px;
+    color: white;
     margin-bottom:20px;
+}
+
+.profile h4{
+
+    color: white;
+}
+
+.profile-image-upload{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    margin:0 auto 20px auto;
+    width:fit-content;
+}
+
+.profile-image-preview{
+    width:140px;
+    height:140px;
+    object-fit:cover;
+    border-radius:50%;
+    border:3px solid #ddd;
+    display:block;
+    margin:0 auto;
+}
+
+.profile-image-default{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#0d6efd;
+    color:white;
+    font-size:2.5rem;
+    font-weight:bold;
+    margin:0 auto;
 }
 
 .profile p{
